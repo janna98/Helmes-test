@@ -4,7 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
-class User extends Model
+class UserSector extends Model
 {
-    protected $table = 'users';
+    protected $table = 'user_sectors';
 }

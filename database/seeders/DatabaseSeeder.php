@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Models\Sector;
 use Illuminate\Database\Seeder;
 
 class DatabaseSeeder extends Seeder
@@ -13,6 +14,11 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        // User::factory(10)->create();
+        $sectorNames = ['Manufacturing', 'Other', 'Service'];
+        foreach($sectorNames as $sectorName) {
+            $sector = new Sector();
+            $sector->name = $sectorName;
+            $sector->save();
+        }
     }
 }
