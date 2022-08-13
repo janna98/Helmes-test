@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateUserSectorTable extends Migration
+class CreateUserSectorsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -15,7 +15,7 @@ class CreateUserSectorTable extends Migration
     {
         Schema::create('user_sectors', function (Blueprint $table) {
             $table->id();
-            $table->foreignId('user_id')->nullable();
+            $table->foreignId('user_id');
             $table->foreign('user_id')
                 ->references('id')
                 ->on('sectors');
@@ -39,6 +39,7 @@ class CreateUserSectorTable extends Migration
         });
     }
 
+
     /**
      * Reverse the migrations.
      *
@@ -46,6 +47,6 @@ class CreateUserSectorTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('user_sector');
+        Schema::dropIfExists('user_sectors');
     }
 }
