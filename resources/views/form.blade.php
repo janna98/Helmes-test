@@ -14,9 +14,6 @@
         @enderror
     </div>
     <div class="mb-3">
-        {{old('name')}}
-        {{print_r(old('sectors'))}}
-        {{old('agreement')}}
         <label for="sectors" class="form-label">Sectors</label>
         <select id="sectors" name="sectors[]" class="form-select @error('sectors') is-invalid @enderror" multiple size="5">
             <@foreach($selections as $sector)
