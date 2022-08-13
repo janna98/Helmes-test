@@ -16,8 +16,8 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [FormController::class, 'index']);
-Route::post('/submit-sector', [FormController::class, 'insertUserSector'])->name('submit-form');
+Route::post('/submit-form', [FormController::class, 'insert'])->name('submit-form');
 
 
 Route::get('/add-sector', [SectorController::class, 'index']);
-Route::post('/submit-sector', [SectorController::class, 'insertSector'])->name('submit-sector');
+Route::post('/submit-sector', [SectorController::class, 'insert'])->name('submit-sector');
