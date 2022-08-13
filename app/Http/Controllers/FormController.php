@@ -6,6 +6,7 @@ use App\Models\Industry;
 use App\Models\Product;
 use App\Models\ProductType;
 use App\Models\Sector;
+use App\Models\UserSector;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
 
@@ -18,9 +19,11 @@ class FormController extends BaseController
             $childIndustries = Industry::select('id', 'name')
                 ->where('sector_id', $sector['id'])->get()->toArray();
             foreach ($childIndustries as $industryIndex => $childIndustry) {
-                $childProducts = Product::where('industry_id', $childIndustry['id'])->get()->toArray();
+                $childProducts = Product::select('id', 'name')
+                    ->where('industry_id', $childIndustry['id'])->get()->toArray();
                 foreach ($childProducts as $productIndex => $childProduct) {
-                    $childProductTypes = ProductType::where('product_id', $childProduct['id'])->get()->toArray();
+                    $childProductTypes = ProductType::select('id', 'name')
+                        ->where('product_id', $childProduct['id'])->get()->toArray();
                     $childProducts[$productIndex]['children'] = $childProductTypes;
                 }
                 $childIndustries[$industryIndex]['children'] = $childProducts;
@@ -30,7 +33,18 @@ class FormController extends BaseController
         return view('form', ["selections" => $selections]);
     }
 
-    public function insertUserSector(Request $request) {
+    public function insert(Request $request) {
+        $this->validateInput($request);
+        $userInSectors = new UserSector();
         return redirect()->back()->withInput();
+    }
+
+    private function validateInput(Request $request) {
+        $rules = [
+            'name' => 'required|string',
+            'sector' => 'required|',
+            'agreement' => 'required',
+        ];
+        $request->validate($rules);
     }
 }
