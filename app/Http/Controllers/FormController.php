@@ -42,7 +42,7 @@ class FormController extends BaseController
     private function validateInput(Request $request) {
         $rules = [
             'name' => 'required|string',
-            'sector' => 'required|',
+            'sectors' => 'required|',
             'agreement' => 'required',
         ];
         $request->validate($rules);

@@ -8,3 +8,6 @@ html, body {
     justify-content: center;
     margin-top: 10%;
 }
+.alert {
+    margin-top: 10px;
+}
