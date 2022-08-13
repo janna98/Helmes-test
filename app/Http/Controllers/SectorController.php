@@ -25,7 +25,7 @@ class SectorController extends BaseController
             ]);
     }
 
-    public function insertSector(Request $request) {
+    public function insert(Request $request) {
         $table = $request->input('table');
         $name = $request->input('name');
         $parentId = $request->input('parentId');
