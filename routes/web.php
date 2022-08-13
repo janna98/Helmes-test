@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\FormController;
+use App\Http\Controllers\SectorController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -13,6 +15,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/', function () {
-    return view('index');
-});
+Route::get('/', [FormController::class, 'index']);
+Route::post('/submit-sector', [FormController::class, 'insertUserSector'])->name('submit-form');
+
+
+Route::get('/add-sector', [SectorController::class, 'index']);
+Route::post('/submit-sector', [SectorController::class, 'insertSector'])->name('submit-sector');
