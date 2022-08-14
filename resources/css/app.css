@@ -11,3 +11,12 @@ html, body {
 .alert {
     margin-top: 10px;
 }
+.level-two {
+    padding-left: 30px;
+}
+.level-three {
+    padding-left: 60px;
+}
+.level-four {
+    padding-left: 90px;
+}
