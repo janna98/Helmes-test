@@ -40,7 +40,7 @@
     </div>
     <div class="mb-3 form-check">
         <label class="form-check-label" for="agreement">Agree to terms</label>
-        <input id="agreement" name="agreement" required
+        <input id="agreement" name="agreement" required @if(old('agreement')) checked @endif
                class="form-check-input @error('agreement') is-invalid @enderror" type="checkbox">
     </div>
     @error('agreement')
