@@ -18,7 +18,7 @@ class CreateUserSectorsTable extends Migration
             $table->foreignId('user_id');
             $table->foreign('user_id')
                 ->references('id')
-                ->on('sectors');
+                ->on('users');
             $table->foreignId('sector_id')->nullable();
             $table->foreign('sector_id')
                 ->references('id')
