@@ -2,49 +2,49 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Industry;
-use App\Models\Product;
-use App\Models\ProductType;
-use App\Models\Sector;
-use App\Models\UserSector;
+use App\Services\SectorService;
+use App\Services\UserSectorService;
+use App\Services\UserService;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
+use Illuminate\Support\Facades\Validator;
 
 class FormController extends BaseController
 {
     public function index() {
-        $sectors = Sector::select('id', 'name')->get()->toArray();
-        $selections = $sectors;
-        foreach ($sectors as $index => $sector) {
-            $childIndustries = Industry::select('id', 'name')
-                ->where('sector_id', $sector['id'])->get()->toArray();
-            foreach ($childIndustries as $industryIndex => $childIndustry) {
-                $childProducts = Product::select('id', 'name')
-                    ->where('industry_id', $childIndustry['id'])->get()->toArray();
-                foreach ($childProducts as $productIndex => $childProduct) {
-                    $childProductTypes = ProductType::select('id', 'name')
-                        ->where('product_id', $childProduct['id'])->get()->toArray();
-                    $childProducts[$productIndex]['children'] = $childProductTypes;
-                }
-                $childIndustries[$industryIndex]['children'] = $childProducts;
-            }
-            $selections[$index]['children'] = $childIndustries;
-        }
+        $service = new SectorService;
+        $selections = $service->getFormattedSectors();
         return view('form', ["selections" => $selections]);
     }
 
-    public function insert(Request $request) {
-        $this->validateInput($request);
-        $userInSectors = new UserSector();
-        return redirect()->back()->withInput();
+    public function insert(Request $request): RedirectResponse
+    {
+        $validator = $this->validateInput($request);
+        if ($validator->fails())
+        {
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        $userName = $request->input('name');
+        $userService = new UserService();
+        if ($userService->exists($userName)) {
+            $validator->getMessageBag()->add('name', 'This name is already taken. Please choose another one.');
+            return redirect()->back()->withErrors($validator)->withInput();
+        }
+        $user = $userService->add($userName);
+        $service = new UserSectorService();
+        $service->add($user->id, $request->input('sectors'));
+        return redirect()->back()->withInput()->with('success', "Sectors were successfully added for user $userName!");
     }
 
-    private function validateInput(Request $request) {
+    private function validateInput(Request $request): \Illuminate\Contracts\Validation\Validator
+    {
         $rules = [
-            'name' => 'required|string',
-            'sectors' => 'required|',
-            'agreement' => 'required',
+            'name' => ['required', 'string'],
+            'sectors' => ['required', 'array'],
+            'sectors.*' => ['required',' regex:/(industry|sector|product|productType)_\d+/'],
+            'agreement' => ['accepted'],
         ];
-        $request->validate($rules);
+       return Validator::make($request->all(), $rules);
     }
 }

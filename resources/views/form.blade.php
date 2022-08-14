@@ -45,6 +45,11 @@
     <div class="alert alert-danger">{{ $message }}</div>
     @enderror
     <button type="submit" id="submitButton" class="btn btn-primary">Save</button>
+    @if (Session::has('success'))
+        <div class="alert alert-success">
+            {!! Session::get('success') !!}
+        </div>
+    @endif
 </form>
 <script>
     /*let submitButton = document.getElementById("submitButton")
