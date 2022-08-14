@@ -8,7 +8,6 @@ use App\Services\UserService;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\Request;
 use Illuminate\Routing\Controller as BaseController;
-use Illuminate\Support\Facades\Validator;
 
 class FormController extends BaseController
 {
@@ -20,31 +19,34 @@ class FormController extends BaseController
 
     public function insert(Request $request): RedirectResponse
     {
-        $validator = $this->validateInput($request);
-        if ($validator->fails())
-        {
-            return redirect()->back()->withErrors($validator)->withInput();
-        }
+        $this->validateInput($request);
+        $userId = $request->input('userId');
         $userName = $request->input('name');
         $userService = new UserService();
-        if ($userService->exists($userName)) {
-            $validator->getMessageBag()->add('name', 'This name is already taken. Please choose another one.');
-            return redirect()->back()->withErrors($validator)->withInput();
+        if (is_null($userId)) {
+            $user = $userService->add($userName);
+            $userId = $user->id;
+        } else {
+            $userService->update($userId, $userName);
         }
-        $user = $userService->add($userName);
         $service = new UserSectorService();
-        $service->add($user->id, $request->input('sectors'));
-        return redirect()->back()->withInput()->with('success', "Sectors were successfully added for user $userName!");
+        $service->add($userId, $request->input('sectors'));
+        return redirect()->back()->withInput()
+            ->with([
+                "success" => "Sectors were successfully added for user $userName!",
+                "userId" => $userId
+                ]);
     }
 
-    private function validateInput(Request $request): \Illuminate\Contracts\Validation\Validator
+    private function validateInput(Request $request): void
     {
         $rules = [
             'name' => ['required', 'string'],
             'sectors' => ['required', 'array'],
             'sectors.*' => ['required',' regex:/(industry|sector|product|productType)_\d+/'],
             'agreement' => ['accepted'],
+            'userId' => ['nullable', 'integer']
         ];
-       return Validator::make($request->all(), $rules);
+       $request->validate($rules);
     }
 }

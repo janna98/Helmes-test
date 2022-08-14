@@ -6,11 +6,6 @@ use App\Models\User;
 
 final class UserService
 {
-
-    public function __construct()
-    {
-    }
-
     public function add($name): User
     {
         $user = new User();
@@ -20,8 +15,11 @@ final class UserService
         return $user;
     }
 
-    public function exists($name): bool {
-        return User::where('name', $name)->exists();
+    public function update($id, $name): void
+    {
+        $user = User::where('id', $id)->first();
+        $user->name = $name;
+        $user->save();
     }
 }
 

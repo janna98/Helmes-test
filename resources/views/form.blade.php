@@ -3,6 +3,7 @@
 @section('content')
 <form method="POST" action="{{route('submit-form')}}">
     @csrf
+    <input type="hidden" name="userId" id="userId" @if (Session::has('userId')) value="{!! Session::get('userId') !!}" @endif/>
     <h3>Please enter your name and pick the sectors you are currently involved in</h3>
     <div class="mb-3">
         <label for="name" class="form-label">Name</label>
